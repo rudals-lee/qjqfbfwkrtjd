@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주제별 법률문서</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .header-link {
+            color: #7f8c8d;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #7f8c8d;
+        }
+
+        .nav-container {
+            background-color: white;
+            padding: 20px 30px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .nav-tab {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: #7f8c8d;
+            font-size: 14px;
+            padding: 10px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab.active {
+            color: #3498db;
+        }
+
+        .nav-tab:hover {
+            background-color: #f1f3f4;
+        }
+
+        .nav-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .nav-icon.search { background-color: #e3f2fd; color: #2196f3; }
+        .nav-icon.management { background-color: #e8f5e8; color: #4caf50; }
+        .nav-icon.write { background-color: #fff3e0; color: #ff9800; }
+        .nav-icon.law { background-color: #f3e5f5; color: #9c27b0; }
+        .nav-icon.notice { background-color: #fff8e1; color: #ffc107; }
+        .nav-icon.consult { background-color: #e0f2f1; color: #009688; }
+        .nav-icon.upload { background-color: #f1f8ff; color: #2196f3; }
+
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .category-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 20px;
+            background-color: white;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s ease;
+            border: 1px solid #e0e0e0;
+        }
+
+        .category-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border-color: #3498db;
+        }
+
+        .category-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .category-icon.blue { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .category-icon.teal { background: linear-gradient(135deg, #1abc9c, #16a085); }
+        .category-icon.orange { background: linear-gradient(135deg, #e67e22, #d35400); }
+        .category-icon.green { background: linear-gradient(135deg, #2ecc71, #27ae60); }
+        .category-icon.purple { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+        .category-icon.red { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+
+        .category-text {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .service-card {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border: 1px solid #f0f0f0;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .service-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .service-desc {
+            color: #7f8c8d;
+            line-height: 1.6;
+        }
+
+        .more-btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .more-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        /* 팝업 모달 스타일 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80%;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transform: scale(0.7);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .modal-header {
+            padding: 25px 30px 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #7f8c8d;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: #f8f9fa;
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 20px 30px 30px;
+        }
+
+        .document-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .document-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .document-item:hover {
+            background: #e8f4f8;
+            transform: translateX(5px);
+        }
+
+        .document-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .document-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+
+        .document-details h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 3px;
+        }
+
+        .document-details p {
+            font-size: 13px;
+            color: #7f8c8d;
+        }
+
+        .download-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background: #2980b9;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 class="title">주제별 법률문서</h1>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <a href="lawform2.html" class="header-link">법률문서 전체보기 ></a>
+            <button class="close-btn">×</button>
+        </div>
+    </div>
+
+    <!-- 팝업 모달 -->
+    <div id="modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title" class="modal-title"></h3>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="modal-documents" class="document-list">
+                    <!-- 문서 리스트가 여기에 동적으로 추가됩니다 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-container">
+        <div class="nav-tabs">
+            <a href="#" class="nav-tab active">
+                <div class="nav-icon search">🔍</div>
+                <span>내용충실</span>
+            </a>
+            <a href="#" class="nav-tab">
+                <div class="nav-icon management">📊</div>
+                <span>지급명령</span>
+            </a>
+            <a href="#" class="nav-tab">
+                <div class="nav-icon write">✏️</div>
+                <span>계약서</span>
+            </a>
+            <a href="#" class="nav-tab">
+                <div class="nav-icon law">⚖️</div>
+                <span>합의서</span>
+            </a>
+            <a href="#" class="nav-tab">
+                <div class="nav-icon notice">ℹ️</div>
+                <span>고소장</span>
+            </a>
+            <a href="#" class="nav-tab">
+                <div class="nav-icon consult">💬</div>
+                <span>근로계약</span>
+            </a>
+            <a href="#" class="nav-tab">
+                <div class="nav-icon upload">📁</div>
+                <span>차용증</span>
+            </a>
+        </div>
+
+        <div class="categories">
+            <a href="#" class="category-item">
+                <div class="category-icon blue">🏠</div>
+                <span class="category-text">위임장</span>
+            </a>
+            <a href="#" class="category-item">
+                <div class="category-icon teal">💰</div>
+                <span class="category-text">미수금</span>
+            </a>
+            <a href="#" class="category-item">
+                <div class="category-icon orange">🏢</div>
+                <span class="category-text">용역계약</span>
+            </a>
+            <a href="#" class="category-item">
+                <div class="category-icon green">⚕️</div>
+                <span class="category-text">병예휴스, 모욕</span>
+            </a>
+            <a href="#" class="category-item">
+                <div class="category-icon purple">🔐</div>
+                <span class="category-text">손해배상</span>
+            </a>
+            <a href="#" class="category-item">
+                <div class="category-icon red">🚗</div>
+                <span class="category-text">교통사고</span>
+            </a>
+            <a href="#" class="category-item">
+                <div class="category-icon blue">🔒</div>
+                <span class="category-text">개인정보처리방침</span>
+            </a>
+            <a href="#" class="category-item">
+                <div class="category-icon green">👤</div>
+                <span class="category-text">임대인</span>
+            </a>
+            <a href="#" class="category-item">
+                <div class="category-icon orange">👥</div>
+                <span class="category-text">임차인</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="section">
+            <h2 class="section-title">문서 작성 지원 서비스</h2>
+            <div class="service-grid">
+                <div class="service-card">
+                    <h3 class="service-title">자동작성 가이드</h3>
+                    <p class="service-desc">초보자도 쉽게 쓸 수 있는 법률문서 작성 가이드</p>
+                    <button class="more-btn" onclick="openModal('guide')">더보기</button>
+                </div>
+                <div class="service-card">
+                    <h3 class="service-title">로펌 업무 계산기</h3>
+                    <p class="service-desc">근로계약서 쓰기 전 임금계산기를 활용해 확인</p>
+                    <button class="more-btn" onclick="openModal('calculator')">더보기</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">기업 전용 서비스</h2>
+            <div class="service-grid">
+                <div class="service-card">
+                    <h3 class="service-title">로펌 비즈니스</h3>
+                    <p class="service-desc">기업 법무관리 효율화를 위한 AI 법무관리 솔루션</p>
+                    <button class="more-btn" onclick="openModal('business')">더보기</button>
+                </div>
+                <div class="service-card">
+                    <h3 class="service-title">스타트업 필수문서</h3>
+                    <p class="service-desc">사업하는 스타트업을 위한 법률문서 프로그램</p>
+                    <button class="more-btn" onclick="openModal('startup')">더보기</button>
+                </div>
+                <div class="service-card">
+                    <h3 class="service-title">창업자의 리걸로드</h3>
+                    <p class="service-desc">창업자를 위한 컨텐츠, 교육 영상, 커뮤니티까지 있는 스페이스</p>
+                    <button class="more-btn" onclick="openModal('legal')">더보기</button>
+                </div>
+                <div class="service-card">
+                    <h3 class="service-title">주주총회</h3>
+                    <p class="service-desc">소규모 특례 기업을 위한 간편한 주주총회 서비스</p>
+                    <button class="more-btn" onclick="openModal('meeting')">더보기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 문서 데이터
+        const documentData = {
+            guide: {
+                title: '자동작성 가이드 문서',
+                documents: [
+                    { name: '기본 계약서 작성 가이드', desc: '계약서 작성을 위한 기본 가이드', icon: '📄', color: 'blue' },
+                    { name: '임대차 계약서 가이드', desc: '부동산 임대차 계약 작성법', icon: '🏠', color: 'green' },
+                    { name: '근로계약서 가이드', desc: '근로계약서 작성 완전정복', icon: '💼', color: 'purple' },
+                    { name: '위임장 작성법', desc: '각종 위임장 작성 방법', icon: '✍️', color: 'orange' }
+                ]
+            },
+            calculator: {
+                title: '로펌 업무 계산기 도구',
+                documents: [
+                    { name: '임금 계산기', desc: '정확한 임금 계산을 위한 도구', icon: '💰', color: 'green' },
+                    { name: '손해배상 계산기', desc: '손해배상액 산정 도구', icon: '⚖️', color: 'red' },
+                    { name: '이자 계산기', desc: '법정이자 및 약정이자 계산', icon: '📊', color: 'blue' },
+                    { name: '소송비용 계산기', desc: '소송비용 예상 산정', icon: '🏛️', color: 'purple' }
+                ]
+            },
+            business: {
+                title: '로펌 비즈니스 솔루션',
+                documents: [
+                    { name: 'AI 계약 검토 시스템', desc: '인공지능 기반 계약서 검토', icon: '🤖', color: 'blue' },
+                    { name: '법무 관리 대시보드', desc: '통합 법무업무 관리 시스템', icon: '📈', color: 'green' },
+                    { name: '문서 자동화 도구', desc: '반복 문서 작성 자동화', icon: '⚙️', color: 'orange' },
+                    { name: '클라이언트 관리 시스템', desc: '고객 관리 및 소통 플랫폼', icon: '👥', color: 'purple' }
+                ]
+            },
+            startup: {
+                title: '스타트업 필수 문서',
+                documents: [
+                    { name: '사업자등록 신청서', desc: '사업자등록을 위한 필수 서류', icon: '📋', color: 'blue' },
+                    { name: '투자계약서', desc: '투자 유치를 위한 계약서', icon: '💎', color: 'purple' },
+                    { name: '주주간 계약서', desc: '주주간 권리의무 관계 정립', icon: '🤝', color: 'green' },
+                    { name: '직원 고용계약서', desc: '스타트업 직원 고용 계약', icon: '👔', color: 'orange' }
+                ]
+            },
+            legal: {
+                title: '창업자 리걸로드 컨텐츠',
+                documents: [
+                    { name: '창업 법률 기초 강의', desc: '창업시 알아야 할 법률 기초', icon: '🎓', color: 'blue' },
+                    { name: '지적재산권 보호 가이드', desc: '특허, 상표, 저작권 보호법', icon: '🛡️', color: 'red' },
+                    { name: '노동법 실무 가이드', desc: '직원 관리를 위한 노동법', icon: '📚', color: 'green' },
+                    { name: '세무 및 회계 기초', desc: '창업자를 위한 세무 지식', icon: '🧮', color: 'orange' }
+                ]
+            },
+            meeting: {
+                title: '주주총회 관련 문서',
+                documents: [
+                    { name: '주주총회 소집 통지서', desc: '주주총회 개최 공지 문서', icon: '📢', color: 'blue' },
+                    { name: '의결권 위임장', desc: '주주총회 의결권 위임 서류', icon: '✅', color: 'green' },
+                    { name: '회의록 작성 양식', desc: '주주총회 회의록 템플릿', icon: '📝', color: 'purple' },
+                    { name: '결의서 양식', desc: '각종 결의사항 문서화', icon: '📄', color: 'orange' }
+                ]
+            }
+        };
+
+        // 팝업 열기
+        function openModal(type) {
+            const modal = document.getElementById('modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalDocuments = document.getElementById('modal-documents');
+            
+            const data = documentData[type];
+            modalTitle.textContent = data.title;
+            
+            modalDocuments.innerHTML = '';
+            data.documents.forEach(doc => {
+                const docItem = document.createElement('div');
+                docItem.className = 'document-item';
+                docItem.innerHTML = `
+                    <div class="document-info">
+                        <div class="document-icon ${doc.color}" style="background: var(--${doc.color}-gradient, linear-gradient(135deg, #3498db, #2980b9));">${doc.icon}</div>
+                        <div class="document-details">
+                            <h4>${doc.name}</h4>
+                            <p>${doc.desc}</p>
+                        </div>
+                    </div>
+                    <button class="download-btn" onclick="downloadDocument('${doc.name}')">다운로드</button>
+                `;
+                modalDocuments.appendChild(docItem);
+            });
+            
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 팝업 닫기
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // 문서 다운로드 (시뮬레이션)
+        function downloadDocument(docName) {
+            alert(`"${docName}" 문서를 다운로드합니다.`);
+        }
+
+        // 모달 외부 클릭시 닫기
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // ESC 키로 모달 닫기
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // CSS 변수 설정
+        document.documentElement.style.setProperty('--blue-gradient', 'linear-gradient(135deg, #3498db, #2980b9)');
+        document.documentElement.style.setProperty('--green-gradient', 'linear-gradient(135deg, #2ecc71, #27ae60)');
+        document.documentElement.style.setProperty('--purple-gradient', 'linear-gradient(135deg, #9b59b6, #8e44ad)');
+        document.documentElement.style.setProperty('--orange-gradient', 'linear-gradient(135deg, #e67e22, #d35400)');
+        document.documentElement.style.setProperty('--red-gradient', 'linear-gradient(135deg, #e74c3c, #c0392b)');
+
+        // 네비게이션 탭 활성화 기능
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // 카테고리 아이템 클릭 효과
+        document.querySelectorAll('.category-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'translateY(-2px)';
+                }, 150);
+            });
+        });
+
+        // 서비스 카드 클릭 효과
+        document.querySelectorAll('.service-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                // 더보기 버튼이 클릭된 경우 카드 효과 제외
+                if (!e.target.classList.contains('more-btn')) {
+                    this.style.transform = 'scale(0.98)';
+                    setTimeout(() => {
+                        this.style.transform = 'translateY(-5px)';
+                    }, 200);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

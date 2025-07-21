@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Law Form - 도움되는 필수 콘텐츠</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: white;
+            border-bottom: 1px solid #e9ecef;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .logo::before {
+            content: "⚖️";
+            margin-right: 8px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #666;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #2563eb;
+        }
+
+        .search-btn {
+            background: #f1f5f9;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .search-btn:hover {
+            background: #e2e8f0;
+        }
+
+        .main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .page-title {
+            text-align: center;
+            font-size: 32px;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 50px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1e293b;
+        }
+
+        .view-all {
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 14px;
+            transition: opacity 0.3s;
+        }
+
+        .view-all:hover {
+            opacity: 0.7;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .content-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-image {
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-image.red {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .card-image.orange {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+        }
+
+        .card-image.purple {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        }
+
+        .card-content {
+            padding: 25px;
+        }
+
+        .card-tag {
+            display: inline-block;
+            background: #fef2f2;
+            color: #dc2626;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .card-tag.orange {
+            background: #fff7ed;
+            color: #ea580c;
+        }
+
+        .card-tag.purple {
+            background: #faf5ff;
+            color: #7c3aed;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+
+        .card-description {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .card-date {
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .illustration {
+            position: absolute;
+            opacity: 0.8;
+        }
+
+        .mail-icon {
+            right: 20px;
+            bottom: 20px;
+            font-size: 60px;
+        }
+
+        .document-icon {
+            right: 20px;
+            bottom: 20px;
+            font-size: 60px;
+        }
+
+        .guide-icon {
+            right: 20px;
+            bottom: 20px;
+            font-size: 60px;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .page-title {
+                font-size: 24px;
+            }
+
+            .main {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">Law Form</div>
+            <div class="nav-links">
+                <a href="#">요금 안내</a>
+                <a href="#">로그인</a>
+                <a href="#">회원가입</a>
+                <button class="search-btn">🔍</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main">
+        <h1 class="page-title">도움되는 필수 콘텐츠</h1>
+
+        <section>
+            <div class="section-header">
+                <h2 class="section-title">내용증명 작성 가이드</h2>
+                <a href="#" class="view-all">전체보기</a>
+            </div>
+
+            <div class="content-grid">
+                <div class="content-card">
+                    <div class="card-image red">
+                        📬
+                        <div class="illustration mail-icon">✉️</div>
+                    </div>
+                    <div class="card-content">
+                        <span class="card-tag">인기</span>
+                        <h3 class="card-title">초보자를 위한 내용증명의 기본</h3>
+                        <p class="card-description">
+                            내용증명 작성이 처음이시라고요?<br>
+                            내용증명 보내는 이유부터 다양한 내용증명 양식까지 발송 콘텐츠에서 확인해보세요.
+                        </p>
+                        <div class="card-date">2024-03-19</div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-image orange">
+                        📄
+                        <div class="illustration document-icon">📋</div>
+                    </div>
+                    <div class="card-content">
+                        <span class="card-tag orange">실용</span>
+                        <h3 class="card-title">내용증명 작성 후 체크사항</h3>
+                        <p class="card-description">
+                            내용증명, 작성만 하면 끝나는 것이 아니에요.<br>
+                            작성한 내용증명을 발송하는 방법을 체크해보세요.
+                        </p>
+                        <div class="card-date">2023-11-28</div>
+                    </div>
+                </div>
+
+                <div class="content-card">
+                    <div class="card-image purple">
+                        📝
+                        <div class="illustration guide-icon">📖</div>
+                    </div>
+                    <div class="card-content">
+                        <span class="card-tag purple">가이드</span>
+                        <h3 class="card-title">내용증명 반양품 때 대응하는 방법</h3>
+                        <p class="card-description">
+                            내용증명 반송이 이제 어떻게 하지?<br>
+                            내용증명 대응 방법, 하나하나 친절하게 알려드려요.
+                        </p>
+                        <div class="card-date">2024-10-02</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // 카드 클릭 효과
+        document.querySelectorAll('.content-card').forEach(card => {
+            card.addEventListener('click', function() {
+                this.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+
+        // 검색 버튼 클릭 효과
+        document.querySelector('.search-btn').addEventListener('click', function() {
+            alert('검색 기능이 구현될 예정입니다.');
+        });
+    </script>
+</body>
+</html>

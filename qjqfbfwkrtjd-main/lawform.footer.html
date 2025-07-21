@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Law Form - 하단 섹션</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* 카테고리 섹션 */
+        .category-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .category-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .category-title {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .category-main-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #1e293b;
+            margin-bottom: 60px;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 40px;
+            justify-items: center;
+        }
+
+        .category-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+
+        .category-item:hover {
+            transform: translateY(-5px);
+            opacity: 0.8;
+        }
+
+        .category-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .category-name {
+            font-size: 14px;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        /* CTA 섹션 */
+        .cta-section {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            padding: 80px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="3" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="90" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
+        }
+
+        .cta-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .cta-highlight {
+            color: #60a5fa;
+        }
+
+        .cta-button {
+            background: white;
+            color: #1e40af;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 파트너 로고 섹션 */
+        .partners-section {
+            background: white;
+            padding: 60px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .partners-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .partners-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 30px;
+            align-items: center;
+            justify-items: center;
+        }
+
+        .partner-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0.6;
+            transition: opacity 0.3s;
+            cursor: pointer;
+        }
+
+        .partner-logo:hover {
+            opacity: 1;
+        }
+
+        .partner-logo-img {
+            width: 80px;
+            height: 40px;
+            background: #f3f4f6;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+
+        .partner-name {
+            font-size: 12px;
+            color: #9ca3af;
+            text-align: center;
+        }
+
+        /* 푸터 */
+        .footer {
+            background: #374151;
+            color: #d1d5db;
+            padding: 60px 0 30px;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 2fr;
+            gap: 60px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h3 {
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: #d1d5db;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #60a5fa;
+        }
+
+        .company-info {
+            grid-column: span 2;
+        }
+
+        .company-logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .company-details {
+            font-size: 14px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .contact-info {
+            font-size: 16px;
+            font-weight: bold;
+            color: #60a5fa;
+            margin-bottom: 5px;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #4b5563;
+            padding-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            background: #4b5563;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #d1d5db;
+            text-decoration: none;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .social-link:hover {
+            background: #60a5fa;
+            color: white;
+        }
+
+        .copyright {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        @media (max-width: 768px) {
+            .category-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 30px;
+            }
+
+            .category-main-title {
+                font-size: 24px;
+            }
+
+            .cta-title {
+                font-size: 22px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .company-info {
+                grid-column: span 1;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 카테고리 섹션 -->
+    <section class="category-section">
+        <div class="category-container">
+            <p class="category-title">다른 사람들도 많이 찾는</p>
+            <h2 class="category-main-title">인기 카테고리</h2>
+            
+            <div class="category-grid">
+                <div class="category-item">
+                    <div class="category-icon">👥</div>
+                    <span class="category-name">근로/임금체계</span>
+                </div>
+                <div class="category-item">
+                    <div class="category-icon">📋</div>
+                    <span class="category-name">지급명령 신청하기</span>
+                </div>
+                <div class="category-item">
+                    <div class="category-icon">🔍</div>
+                    <span class="category-name">사업등록 간편 확인</span>
+                </div>
+                <div class="category-item">
+                    <div class="category-icon">💼</div>
+                    <span class="category-name">고소장 내용물 확인</span>
+                </div>
+                <div class="category-item">
+                    <div class="category-icon">📊</div>
+                    <span class="category-name">민수출자</span>
+                </div>
+                <div class="category-item">
+                    <div class="category-icon">🏠</div>
+                    <span class="category-name">부동산</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA 섹션 -->
+    <section class="cta-section">
+        <div class="cta-container">
+            <h2 class="cta-title">
+                지금 내용증명을 작성하면 <span class="cta-highlight">7일 무료 이용권</span> 제공
+            </h2>
+            <button class="cta-button">내용증명 작성하기</button>
+        </div>
+    </section>
+
+    <!-- 파트너 로고 섹션 -->
+    <section class="partners-section">
+        <div class="partners-container">
+            <div class="partners-grid">
+                <div class="partner-logo">
+                    <div class="partner-logo-img">벤처</div>
+                    <div class="partner-name">2022 중소벤처기업부<br>혁신제품 지정</div>
+                </div>
+                <div class="partner-logo">
+                    <div class="partner-logo-img">이노비즈</div>
+                    <div class="partner-name">2022 중소벤처기업부<br>이노비즈 인증</div>
+                </div>
+                <div class="partner-logo">
+                    <div class="partner-logo-img">메인</div>
+                    <div class="partner-name">2023 중소벤처기업부<br>메인비즈 인증</div>
+                </div>
+                <div class="partner-logo">
+                    <div class="partner-logo-img">K-BIZ</div>
+                    <div class="partner-name">2020 중소벤처기업부 선정<br>우수기업혁신플랫폼</div>
+                </div>
+                <div class="partner-logo">
+                    <div class="partner-logo-img">조달청</div>
+                    <div class="partner-name">2023 Best Top<br>7대 기관</div>
+                </div>
+                <div class="partner-logo">
+                    <div class="partner-logo-img">법무부</div>
+                    <div class="partner-name">2021 법무부시차 인증<br>ISO 27001:2013<br>국제인증획득</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>회사소개</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">로펌 어뮤지컴</a></li>
+                        <li><a href="#">로펌소개</a></li>
+                        <li><a href="#">사업 소개</a></li>
+                        <li><a href="#">자주묻는 질문</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>콘텐츠</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">이용약관</a></li>
+                        <li><a href="#">개인정보처리방침</a></li>
+                        <li><a href="#">공지사항</a></li>
+                        <li><a href="#">이벤트</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h3>마케팅</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">언론보도</a></li>
+                        <li><a href="#">블로그</a></li>
+                        <li><a href="#">유튜브 채널</a></li>
+                        <li><a href="#">카카오톡 채널</a></li>
+                        <li><a href="#">네이버 뉴스 출간</a></li>
+                        <li><a href="#">로펌 비즈니스 프로그램</a></li>
+                    </ul>
+                </div>
+
+                <div class="company-info">
+                    <div class="company-logo">AMICUS LEX</div>
+                    <div class="company-details">
+                        아뮤지컴주식회사<br>
+                        대표이사 : 김현오 | 주소 : 서울시 서초구 서초중앙로 123, 4층 1001호(서초동, 우신빌딩)<br>
+                        사업자등록번호 : 509-81-00111 | 통신판매업신고 : 2023-서울용산-2299 | 부가통신사업자신고번호 : 제호구<br>
+                        개인정보관리책임자 : 김현오
+                    </div>
+                    <div class="contact-info">고객센터 02-6925-0227</div>
+                    <div>
+                        이메일 : contact@amicuslex.net | 평일 10:00 ~ 18:00 (점심시간 12:30 ~ 13:30)
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="social-links">
+                    <a href="#" class="social-link">📘</a>
+                    <a href="#" class="social-link">📷</a>
+                    <a href="#" class="social-link">🐦</a>
+                    <a href="#" class="social-link">▶️</a>
+                </div>
+                <div class="copyright">
+                    © 2020-2025 Amicus Lex Inc. all rights reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 카테고리 아이템 클릭 효과
+        document.querySelectorAll('.category-item').forEach(item => {
+            item.addEventListener('click', function() {
+                this.style.transform = 'translateY(-5px) scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 200);
+            });
+        });
+
+        // CTA 버튼 클릭 효과
+        document.querySelector('.cta-button').addEventListener('click', function() {
+            alert('내용증명 작성 페이지로 이동합니다!');
+        });
+
+        // 파트너 로고 클릭 효과
+        document.querySelectorAll('.partner-logo').forEach(logo => {
+            logo.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+    </script>
+</body>
+</html>
