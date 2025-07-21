@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>법률문서 검색</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            padding: 20px 30px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            position: relative;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            flex: 1;
+            text-align: center;
+        }
+
+        .close-btn {
+            position: absolute;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .search-section {
+            padding: 20px 30px;
+        }
+
+        .search-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 50px 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: #007bff;
+        }
+
+        .search-input::placeholder {
+            color: #999;
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            color: #666;
+        }
+
+        .tab-container {
+            padding: 0 30px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 30px;
+        }
+
+        .tab {
+            padding: 15px 0;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: #333;
+            border-bottom-color: #007bff;
+            font-weight: 600;
+        }
+
+        .tab:hover {
+            color: #333;
+        }
+
+        .content {
+            display: flex;
+            max-height: 400px;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: #f8f9fa;
+            border-right: 1px solid #e9ecef;
+            overflow-y: auto;
+        }
+
+        .category {
+            padding: 15px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            border-bottom: 1px solid #e9ecef;
+            transition: background-color 0.3s;
+        }
+
+        .category:hover {
+            background-color: #e9ecef;
+        }
+
+        .category.active {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px 30px;
+            overflow-y: auto;
+        }
+
+        .document-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f3f4;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .document-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .star-icon {
+            width: 18px;
+            height: 18px;
+            margin-right: 12px;
+            color: #ccc;
+            cursor: pointer;
+        }
+
+        .star-icon:hover {
+            color: #ffc107;
+        }
+
+        .document-title {
+            flex: 1;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .info-icon {
+            width: 16px;
+            height: 16px;
+            color: #999;
+            margin-left: 8px;
+            cursor: pointer;
+        }
+
+        .info-icon:hover {
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">어떤 법률문서를 작성할까요?</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+
+            <div class="search-section">
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="찾으시는 문서명을 입력해주세요.">
+                    <button class="search-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"/>
+                            <path d="21 21l-4.35-4.35"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="tab-container">
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab(this, 'category')">카테고리</div>
+                    <div class="tab" onclick="switchTab(this, 'corporate')">기업법률</div>
+                    <div class="tab" onclick="switchTab(this, 'civil')">생활법률</div>
+                    <div class="tab" onclick="switchTab(this, 'search')">즐겨찾기</div>
+                </div>
+            </div>
+
+            <div class="content">
+                <div class="sidebar">
+                    <div class="category active" onclick="selectCategory(this)">전체</div>
+                    <div class="category" onclick="selectCategory(this)">내용증명</div>
+                    <div class="category" onclick="selectCategory(this)">지급명령</div>
+                    <div class="category" onclick="selectCategory(this)">계약서</div>
+                    <div class="category" onclick="selectCategory(this)">기타</div>
+                    <div class="category" onclick="selectCategory(this)">고소장</div>
+                </div>
+
+                <div class="main-content" id="mainContent">
+                    <div class="document-item">
+                        <svg class="star-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                        </svg>
+                        <span class="document-title">가사도우미계약서</span>
+                        <svg class="info-icon" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,17C11.45,17 11,16.55 11,16C11,15.45 11.45,15 12,15C12.55,15 13,15.45 13,16C13,16.55 12.55,17 12,17M12,15A2,2 0 0,1 10,13C10,11.9 10.9,11 12,11A2,2 0 0,1 14,13C14,13.75 13.81,14.17 13.25,14.75C12.75,15.25 12.5,15.5 12.5,16H11.5C11.5,15.25 11.75,14.75 12.25,14.25C12.81,13.69 13,13.25 13,12.75A1.25,1.25 0 0,0 11.75,11.5A1.25,1.25 0 0,0 10.5,12.75"/>
+                        </svg>
+                    </div>
+
+                    <div class="document-item">
+                        <svg class="star-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                        </svg>
+                        <span class="document-title">가임휴(가족돌봄)결정에 대한 이의신청서</span>
+                        <svg class="info-icon" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,17C11.45,17 11,16.55 11,16C11,15.45 11.45,15 12,15C12.55,15 13,15.45 13,16C13,16.55 12.55,17 12,17M12,15A2,2 0 0,1 10,13C10,11.9 10.9,11 12,11A2,2 0 0,1 14,13C14,13.75 13.81,14.17 13.25,14.75C12.75,15.25 12.5,15.5 12.5,16H11.5C11.5,15.25 11.75,14.75 12.25,14.25C12.81,13.69 13,13.25 13,12.75A1.25,1.25 0 0,0 11.75,11.5A1.25,1.25 0 0,0 10.5,12.75"/>
+                        </svg>
+                    </div>
+
+                    <div class="document-item">
+                        <svg class="star-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                        </svg>
+                        <span class="document-title">가지급금 약정서</span>
+                        <svg class="info-icon" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,17C11.45,17 11,16.55 11,16C11,15.45 11.45,15 12,15C12.55,15 13,15.45 13,16C13,16.55 12.55,17 12,17M12,15A2,2 0 0,1 10,13C10,11.9 10.9,11 12,11A2,2 0 0,1 14,13C14,13.75 13.81,14.17 13.25,14.75C12.75,15.25 12.5,15.5 12.5,16H11.5C11.5,15.25 11.75,14.75 12.25,14.25C12.81,13.69 13,13.25 13,12.75A1.25,1.25 0 0,0 11.75,11.5A1.25,1.25 0 0,0 10.5,12.75"/>
+                        </svg>
+                    </div>
+
+                    <div class="document-item">
+                        <svg class="star-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                        </svg>
+                        <span class="document-title">감사변경등기신청서</span>
+                        <svg class="info-icon" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,17C11.45,17 11,16.55 11,16C11,15.45 11.45,15 12,15C12.55,15 13,15.45 13,16C13,16.55 12.55,17 12,17M12,15A2,2 0 0,1 10,13C10,11.9 10.9,11 12,11A2,2 0 0,1 14,13C14,13.75 13.81,14.17 13.25,14.75C12.75,15.25 12.5,15.5 12.5,16H11.5C11.5,15.25 11.75,14.75 12.25,14.25C12.81,13.69 13,13.25 13,12.75A1.25,1.25 0 0,0 11.75,11.5A1.25,1.25 0 0,0 10.5,12.75"/>
+                        </svg>
+                    </div>
+
+                    <div class="document-item">
+                        <svg class="star-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                        </svg>
+                        <span class="document-title">개인정보수집동의서(온라인플랫폼)</span>
+                        <svg class="info-icon" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,17C11.45,17 11,16.55 11,16C11,15.45 11.45,15 12,15C12.55,15 13,15.45 13,16C13,16.55 12.55,17 12,17M12,15A2,2 0 0,1 10,13C10,11.9 10.9,11 12,11A2,2 0 0,1 14,13C14,13.75 13.81,14.17 13.25,14.75C12.75,15.25 12.5,15.5 12.5,16H11.5C11.5,15.25 11.75,14.75 12.25,14.25C12.81,13.69 13,13.25 13,12.75A1.25,1.25 0 0,0 11.75,11.5A1.25,1.25 0 0,0 10.5,12.75"/>
+                        </svg>
+                    </div>
+
+                    <div class="document-item">
+                        <svg class="star-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                        </svg>
+                        <span class="document-title">개인정보처리동의서</span>
+                        <svg class="info-icon" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,17C11.45,17 11,16.55 11,16C11,15.45 11.45,15 12,15C12.55,15 13,15.45 13,16C13,16.55 12.55,17 12,17M12,15A2,2 0 0,1 10,13C10,11.9 10.9,11 12,11A2,2 0 0,1 14,13C14,13.75 13.81,14.17 13.25,14.75C12.75,15.25 12.5,15.5 12.5,16H11.5C11.5,15.25 11.75,14.75 12.25,14.25C12.81,13.69 13,13.25 13,12.75A1.25,1.25 0 0,0 11.75,11.5A1.25,1.25 0 0,0 10.5,12.75"/>
+                        </svg>
+                    </div>
+
+                    <div class="document-item">
+                        <svg class="star-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                        </svg>
+                        <span class="document-title">개인정보처리방침</span>
+                        <svg class="info-icon" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,17C11.45,17 11,16.55 11,16C11,15.45 11.45,15 12,15C12.55,15 13,15.45 13,16C13,16.55 12.55,17 12,17M12,15A2,2 0 0,1 10,13C10,11.9 10.9,11 12,11A2,2 0 0,1 14,13C14,13.75 13.81,14.17 13.25,14.75C12.75,15.25 12.5,15.5 12.5,16H11.5C11.5,15.25 11.75,14.75 12.25,14.25C12.81,13.69 13,13.25 13,12.75A1.25,1.25 0 0,0 11.75,11.5A1.25,1.25 0 0,0 10.5,12.75"/>
+                        </svg>
+                    </div>
+
+                    <div class="document-item">
+                        <svg class="star-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                        </svg>
+                        <span class="document-title">개인정보취급자 보안서약서</span>
+                        <svg class="info-icon" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,17C11.45,17 11,16.55 11,16C11,15.45 11.45,15 12,15C12.55,15 13,15.45 13,16C13,16.55 12.55,17 12,17M12,15A2,2 0 0,1 10,13C10,11.9 10.9,11 12,11A2,2 0 0,1 14,13C14,13.75 13.81,14.17 13.25,14.75C12.75,15.25 12.5,15.5 12.5,16H11.5C11.5,15.25 11.75,14.75 12.25,14.25C12.81,13.69 13,13.25 13,12.75A1.25,1.25 0 0,0 11.75,11.5A1.25,1.25 0 0,0 10.5,12.75"/>
+                        </svg>
+                    </div>
+
+                    <div class="document-item">
+                        <svg class="star-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                        </svg>
+                        <span class="document-title">개인투자조합 표준규약</span>
+                        <svg class="info-icon" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,17C11.45,17 11,16.55 11,16C11,15.45 11.45,15 12,15C12.55,15 13,15.45 13,16C13,16.55 12.55,17 12,17M12,15A2,2 0 0,1 10,13C10,11.9 10.9,11 12,11A2,2 0 0,1 14,13C14,13.75 13.81,14.17 13.25,14.75C12.75,15.25 12.5,15.5 12.5,16H11.5C11.5,15.25 11.75,14.75 12.25,14.25C12.81,13.69 13,13.25 13,12.75A1.25,1.25 0 0,0 11.75,11.5A1.25,1.25 0 0,0 10.5,12.75"/>
+                        </svg>
+                    </div>
+
+                    <div class="document-item">
+                        <svg class="star-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                        </svg>
+                        <span class="document-title">경력증명서</span>
+                        <svg class="info-icon" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,17C11.45,17 11,16.55 11,16C11,15.45 11.45,15 12,15C12.55,15 13,15.45 13,16C13,16.55 12.55,17 12,17M12,15A2,2 0 0,1 10,13C10,11.9 10.9,11 12,11A2,2 0 0,1 14,13C14,13.75 13.81,14.17 13.25,14.75C12.75,15.25 12.5,15.5 12.5,16H11.5C11.5,15.25 11.75,14.75 12.25,14.25C12.81,13.69 13,13.25 13,12.75A1.25,1.25 0 0,0 11.75,11.5A1.25,1.25 0 0,0 10.5,12.75"/>
+                        </svg>
+                    </div>
+
+                    <div class="document-item">
+                        <svg class="star-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                        </svg>
+                        <span class="document-title">계약 해제(해지) 합의서</span>
+                        <svg class="info-icon" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,17C11.45,17 11,16.55 11,16C11,15.45 11.45,15 12,15C12.55,15 13,15.45 13,16C13,16.55 12.55,17 12,17M12,15A2,2 0 0,1 10,13C10,11.9 10.9,11 12,11A2,2 0 0,1 14,13C14,13.75 13.81,14.17 13.25,14.75C12.75,15.25 12.5,15.5 12.5,16H11.5C11.5,15.25 11.75,14.75 12.25,14.25C12.81,13.69 13,13.25 13,12.75A1.25,1.25 0 0,0 11.75,11.5A1.25,1.25 0 0,0 10.5,12.75"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function closeModal() {
+            document.querySelector('.modal-overlay').style.display = 'none';
+        }
+
+        function switchTab(element, tabType) {
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Add active class to clicked tab
+            element.classList.add('active');
+            
+            // You can add logic here to switch content based on tabType
+            console.log('Switched to tab:', tabType);
+        }
+
+        function selectCategory(element) {
+            // Remove active class from all categories
+            document.querySelectorAll('.category').forEach(category => {
+                category.classList.remove('active');
+            });
+            
+            // Add active class to clicked category
+            element.classList.add('active');
+            
+            console.log('Selected category:', element.textContent);
+        }
+
+        // Add star click functionality
+        document.querySelectorAll('.star-icon').forEach(star => {
+            star.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (this.style.color === 'rgb(255, 193, 7)') {
+                    this.style.color = '#ccc';
+                    this.setAttribute('fill', 'none');
+                } else {
+                    this.style.color = '#ffc107';
+                    this.setAttribute('fill', 'currentColor');
+                }
+            });
+        });
+
+        // Add document item click functionality
+        document.querySelectorAll('.document-item').forEach(item => {
+            item.addEventListener('click', function() {
+                console.log('Selected document:', this.querySelector('.document-title').textContent);
+            });
+        });
+
+        // Add search functionality
+        document.querySelector('.search-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        document.querySelector('.search-btn').addEventListener('click', performSearch);
+
+        function performSearch() {
+            const searchTerm = document.querySelector('.search-input').value.toLowerCase();
+            const documentItems = document.querySelectorAll('.document-item');
+            
+            documentItems.forEach(item => {
+                const title = item.querySelector('.document-title').textContent.toLowerCase();
+                if (title.includes(searchTerm) || searchTerm === '') {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Close modal when clicking outside
+        document.querySelector('.modal-overlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Prevent modal from closing when clicking inside
+        document.querySelector('.modal').addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
