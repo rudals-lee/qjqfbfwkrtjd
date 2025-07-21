@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>로폼 문서 뷰어</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    header {
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 16px;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .logo {
+      font-size: 18px;
+      font-weight: bold;
+      color: #222;
+    }
+
+    .header-buttons {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-buttons button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .blue-button {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .grey-button {
+      background-color: #e0e0e0;
+      color: #666;
+    }
+
+    .right-icons {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #555;
+      font-size: 18px;
+    }
+
+    .right-icons i {
+      cursor: pointer;
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: 10px;
+    }
+
+    .profile-icon {
+      width: 28px;
+      height: 28px;
+      background-color: #eee;
+      border-radius: 50%;
+    }
+
+    .guide-link {
+      font-size: 13px;
+      color: #999;
+      text-decoration: none;
+      margin-left: 16px;
+      display: block;
+      padding: 8px 16px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">금전차용증</div>
+
+  <div class="header-buttons">
+    <button class="grey-button">즐겨찾기</button>
+    <button class="blue-button">법률문서 선택하기</button>
+    <button class="grey-button" disabled>서명하기</button>
+    <button class="grey-button" disabled>변호사 검토 요청</button>
+  </div>
+
+  <div class="right-icons">
+    <!-- <i class="fa-solid fa-rotate-left" title="불러오기"></i> -->
+    <i class="fa-solid fa-arrow-rotate-left" title="되돌리기"></i>
+    <i class="fa-solid fa-print" title="인쇄하기"></i>
+    <i class="fa-solid fa-share-nodes" title="공유하기"></i>
+    <i class="fa-solid fa-download" title="다운로드"></i>
+
+    <div class="profile">
+      <div class="profile-icon"></div>
+      <span>마이로폼</span>
+    </div>
+  </div>
+</header>
+
+<a href="#" class="guide-link">사용가이드</a>
+
+</body>
+</html>
