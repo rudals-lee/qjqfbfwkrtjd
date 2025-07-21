@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>카카오 주소 검색</title>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 20px;
+        }
+
+        .form-section {
+            flex: 1;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .document-section {
+            flex: 1;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+        }
+
+        .address-input {
+            position: relative;
+        }
+
+        .address-input input[readonly] {
+            background-color: #f8f9fa;
+            cursor: pointer;
+        }
+
+        .address-input input[readonly]:hover {
+            background-color: #e9ecef;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            pointer-events: none;
+        }
+
+        .document-preview {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            background-color: #fafafa;
+            min-height: 400px;
+        }
+
+        .document-header {
+            text-align: right;
+            margin-bottom: 30px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .document-content {
+            line-height: 1.8;
+            font-size: 14px;
+        }
+
+        .document-row {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .document-label {
+            font-weight: bold;
+            min-width: 80px;
+            margin-right: 10px;
+        }
+
+        .document-value {
+            flex: 1;
+            color: #333;
+        }
+
+        .highlight {
+            background-color: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .auto-complete-notice {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #0c5460;
+        }
+
+        .btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .address-detail-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .address-detail-group input {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-section">
+            <h2>주소 입력 폼</h2>
+            
+            <div class="form-group">
+                <label for="name">작성자명</label>
+                <input type="text" id="name" placeholder="성함을 입력해주세요">
+            </div>
+
+            <div class="form-group">
+                <label for="phone">연락처</label>
+                <input type="text" id="phone" placeholder="연락처를 입력해주세요">
+            </div>
+
+            <div class="form-group">
+                <label for="address">주소 <span style="color: #007bff;">(클릭하여 검색)</span></label>
+                <div class="address-input">
+                    <input type="text" id="address" placeholder="주소를 검색하려면 클릭하세요" readonly>
+                    <span class="search-icon">🔍</span>
+                </div>
+                <div class="address-detail-group">
+                    <input type="text" id="detailAddress" placeholder="상세주소 입력">
+                    <input type="text" id="extraAddress" placeholder="참고항목" readonly>
+                </div>
+                <!-- <div class="auto-complete-notice">
+                    💡 주소를 선택하면 우측 문서에 자동으로 반영됩니다.
+                </div> -->
+            </div>
+
+            <div class="form-group">
+                <label for="email">이메일</label>
+                <input type="text" id="email" placeholder="이메일을 입력해주세요">
+            </div>
+        </div>
+
+        <div class="document-section">
+            <h2>문서 미리보기</h2>
+            <div class="document-preview">
+                <div class="document-header">2025.07.21.</div>
+                
+                <!-- 이름 -->
+                <div class="document-content">
+                    <div class="document-row">
+                        <span class="document-label">작성자:</span>
+                        <span class="document-value" id="doc-name">(작성자명)</span>
+                    </div>
+                    
+                    <!-- 연락처 -->
+                    <div class="document-row">
+                        <span class="document-label">연락처:</span>
+                        <span class="document-value" id="doc-phone">(연락처)</span>
+                    </div>
+                    
+                    <!-- 주소 -->
+                    <div class="document-row">
+                        <span class="document-label">주소:</span>
+                        <span class="document-value highlight" id="doc-address">(주소를 검색해주세요)</span>
+                    </div>
+                    
+                    <div class="document-row">
+                        <span class="document-label">상세주소:</span>
+                        <span class="document-value" id="doc-detail-address">(상세주소)</span>
+                    </div>
+                    
+                    <!-- 이메일 -->
+                    <div class="document-row">
+                        <span class="document-label">이메일:</span>
+                        <span class="document-value" id="doc-email">(이메일)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 문서 업데이트 함수들
+        function updateDocument() {
+            document.getElementById('doc-name').textContent = 
+                document.getElementById('name').value || '(작성자명)';
+            
+            document.getElementById('doc-phone').textContent = 
+                document.getElementById('phone').value || '(연락처)';
+            
+            document.getElementById('doc-email').textContent = 
+                document.getElementById('email').value || '(이메일)';
+            
+            document.getElementById('doc-detail-address').textContent = 
+                document.getElementById('detailAddress').value || '(상세주소)';
+        }
+
+        // 입력 필드 이벤트 리스너
+        document.getElementById('name').addEventListener('input', updateDocument);
+        document.getElementById('phone').addEventListener('input', updateDocument);
+        document.getElementById('email').addEventListener('input', updateDocument);
+        document.getElementById('detailAddress').addEventListener('input', updateDocument);
+
+        // 카카오 주소 검색 API 함수
+        function execDaumPostcode() {
+            new daum.Postcode({
+                oncomplete: function(data) {
+                    // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                    var addr = ''; // 주소 변수
+                    var extraAddr = ''; // 참고항목 변수
+
+                    //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                    if (data.userSelectedType === 'R') { // 도로명 주소
+                        addr = data.roadAddress;
+                    } else { // 지번 주소
+                        addr = data.jibunAddress;
+                    }
+
+                    // 도로명 주소인 경우 참고항목을 조합한다.
+                    if(data.userSelectedType === 'R'){
+                        // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                        if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                            extraAddr += data.bname;
+                        }
+                        // 건물명이 있고, 공동주택일 경우 추가한다.
+                        if(data.buildingName !== '' && data.apartment === 'Y'){
+                            extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                        }
+                        // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                        if(extraAddr !== ''){
+                            extraAddr = ' (' + extraAddr + ')';
+                        }
+                    }
+
+                    // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                    document.getElementById('address').value = addr;
+                    document.getElementById('extraAddress').value = extraAddr;
+                    
+                    // 문서에 주소 정보 자동 반영
+                    const fullAddress = addr + extraAddr;
+                    document.getElementById('doc-address').textContent = fullAddress;
+                    document.getElementById('doc-address').classList.add('highlight');
+                    
+                    // 하이라이트 효과를 잠시 후 제거
+                    setTimeout(() => {
+                        document.getElementById('doc-address').classList.remove('highlight');
+                    }, 2000);
+                    
+                    // 커서를 상세주소 필드로 이동
+                    document.getElementById('detailAddress').focus();
+                }
+            }).open();
+        }
+
+        // 주소 입력 필드 클릭 이벤트
+        document.getElementById('address').addEventListener('click', execDaumPostcode);
+
+        // 엔터키로도 주소 검색 가능
+        document.getElementById('address').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                execDaumPostcode();
+            }
+        });
+
+        // 페이지 로드 시 초기 문서 업데이트
+        updateDocument();
+    </script>
+</body>
+</html>

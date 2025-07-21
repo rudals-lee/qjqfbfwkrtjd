@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 팝업</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .header nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        .signup-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white !important;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .signup-btn:hover {
+            transform: translateY(-2px);
+            color: white !important;
+        }
+
+        .main-content {
+            text-align: center;
+            color: white;
+            margin-top: 100px;
+        }
+
+        .main-content h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .main-content p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* 팝업 오버레이 */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .popup-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        /* 팝업 컨테이너 */
+        .popup {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .popup-overlay.active .popup {
+            transform: scale(1);
+        }
+
+        /* 닫기 버튼 */
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #999;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .close-btn:hover {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        /* 팝업 제목 */
+        .popup-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #333;
+        }
+
+        .popup-title h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .popup-title p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* 소셜 로그인 버튼들 */
+        .social-logins {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .social-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .kakao-btn {
+            background: #FEE500;
+            color: #3C1E1E;
+        }
+
+        .naver-btn {
+            background: #03C75A;
+            color: white;
+        }
+
+        .google-btn {
+            background: white;
+            border: 1px solid #ddd;
+            color: #333;
+        }
+
+        /* 입력 폼 */
+        .login-form {
+            margin-bottom: 2rem;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        /* 옵션들 */
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .find-account {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .find-account:hover {
+            text-decoration: underline;
+        }
+
+        /* 로그인 버튼 */
+        .login-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            margin-bottom: 1rem;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        /* 회원가입 링크 */
+        .signup-link {
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .signup-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* 비밀번호 가리기 아이콘 */
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #999;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .popup {
+                margin: 1rem;
+            }
+            
+            .main-content h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 헤더 -->
+    <header class="header">
+        <nav>
+            <div class="logo">MyWebsite</div>
+            <div class="nav-links">
+                <a href="#" onclick="showLoginPopup()">로그인</a>
+                <a href="#" onclick="showLoginPopup()" class="signup-btn">회원가입</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+        <h1>환영합니다!</h1>
+        <p>회원가입 버튼을 클릭해보세요</p>
+    </main>
+
+    <!-- 로그인 팝업 -->
+    <div class="popup-overlay" id="loginPopup">
+        <div class="popup">
+            <button class="close-btn" onclick="hideLoginPopup()">&times;</button>
+            
+            <div class="popup-title">
+                <h2>쉽고, 빠르게! 무료로 <span style="color: #667eea;">로그인하세요</span></h2>
+            </div>
+
+            <div class="social-logins">
+                <button class="social-btn kakao-btn" onclick="socialLogin('kakao')">
+                    💬
+                </button>
+                <button class="social-btn naver-btn" onclick="socialLogin('naver')">
+                    N
+                </button>
+                <button class="social-btn google-btn" onclick="socialLogin('google')">
+                    G
+                </button>
+            </div>
+
+            <form class="login-form" onsubmit="handleLogin(event)">
+                <div class="input-group">
+                    <input type="email" class="form-input" placeholder="이메일" required>
+                </div>
+                
+                <div class="input-group">
+                    <div class="input-wrapper">
+                        <input type="password" class="form-input" placeholder="비밀번호" id="passwordInput" required>
+                        <span class="password-toggle" onclick="togglePassword()">👁</span>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" id="rememberMe">
+                        이메일 기억하기
+                    </label>
+                    <a href="#" class="find-account">계정 찾기</a>
+                </div>
+
+                <button type="submit" class="login-btn">로그인</button>
+            </form>
+
+            <div class="signup-link">
+                <a href="#" onclick="handleSignup()">회원가입</a>
+            </div>
+
+            <p style="text-align: center; color: #999; font-size: 0.8rem; margin-top: 1rem;">
+                변호사 회원은 가입 후 마이로폼에서 변호사 인증해주세요.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // 팝업 보이기
+        function showLoginPopup() {
+            const popup = document.getElementById('loginPopup');
+            popup.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 팝업 숨기기
+        function hideLoginPopup() {
+            const popup = document.getElementById('loginPopup');
+            popup.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // 오버레이 클릭시 팝업 닫기
+        document.getElementById('loginPopup').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideLoginPopup();
+            }
+        });
+
+        // ESC 키로 팝업 닫기
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                hideLoginPopup();
+            }
+        });
+
+        // 비밀번호 보기/숨기기
+        function togglePassword() {
+            const passwordInput = document.getElementById('passwordInput');
+            const toggle = document.querySelector('.password-toggle');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggle.textContent = '🙈';
+            } else {
+                passwordInput.type = 'password';
+                toggle.textContent = '👁';
+            }
+        }
+
+        // 소셜 로그인
+        function socialLogin(provider) {
+            alert(`${provider} 로그인이 선택되었습니다.`);
+            // 실제로는 각 소셜 로그인 API를 연동
+        }
+
+        // 로그인 폼 제출
+        function handleLogin(event) {
+            event.preventDefault();
+            alert('로그인이 처리됩니다.');
+            hideLoginPopup();
+        }
+
+        // 회원가입
+        function handleSignup() {
+            alert('회원가입 페이지로 이동합니다.');
+        }
+
+        // 페이지 로드시 애니메이션
+        window.addEventListener('load', function() {
+            document.querySelector('.header').style.animation = 'slideDown 0.8s ease';
+            document.querySelector('.main-content').style.animation = 'fadeInUp 1s ease 0.3s both';
+        });
+    </script>
+
+    <style>
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</body>
+</html>

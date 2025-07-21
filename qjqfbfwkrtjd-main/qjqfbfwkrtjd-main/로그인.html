@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 팝업</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans KR', sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-btn {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .login-btn:hover {
+            background-color: #3367d6;
+        }
+
+        /* 모달 배경 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 모달 컨테이너 */
+        .modal-container {
+            background: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            padding: 32px 24px;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* 닫기 버튼 */
+        .close-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #ccc;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            color: #999;
+        }
+
+        /* 헤더 */
+        .modal-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .modal-subtitle {
+            color: #4285f4;
+            font-weight: 500;
+        }
+
+        /* 소셜 로그인 버튼들 */
+        .social-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .social-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .social-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .kakao-btn {
+            background-color: #fee500;
+        }
+
+        .naver-btn {
+            background-color: #03c75a;
+        }
+
+        .google-btn {
+            background-color: white;
+            border: 1px solid #ddd;
+        }
+
+        /* 로그인 폼 */
+        .login-form {
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus {
+            border-color: #4285f4;
+        }
+
+        .form-input::placeholder {
+            color: #aaa;
+        }
+
+        /* 체크박스와 비밀번호 찾기 */
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+        }
+
+        .find-password {
+            color: #666;
+            text-decoration: none;
+        }
+
+        .find-password:hover {
+            text-decoration: underline;
+        }
+
+        /* 로그인 버튼 */
+        .login-submit-btn {
+            width: 100%;
+            background-color: #e0e0e0;
+            color: #999;
+            border: none;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: not-allowed;
+            margin-bottom: 16px;
+        }
+
+        .login-submit-btn.active {
+            background-color: #4285f4;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* 회원가입 링크 */
+        .signup-link {
+            text-align: center;
+            color: #4285f4;
+            text-decoration: none;
+            font-size: 14px;
+            display: block;
+            margin-bottom: 16px;
+        }
+
+        .signup-link:hover {
+            text-decoration: underline;
+        }
+
+        /* 하단 텍스트 */
+        .footer-text {
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            line-height: 1.4;
+        }
+
+        /* 아이콘 스타일 */
+        .icon {
+            width: 24px;
+            height: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>메인 페이지</h1>
+        <p>헤더의 로그인 버튼을 클릭해보세요</p>
+        <br>
+        <button class="login-btn" onclick="openModal()">로그인</button>
+    </div>
+
+    <!-- 모달 오버레이 -->
+    <div class="modal-overlay" id="loginModal" onclick="closeModalOnOverlay(event)">
+        <div class="modal-container" onclick="event.stopPropagation()">
+            <!-- 닫기 버튼 -->
+            <button class="close-btn" onclick="closeModal()">×</button>
+            
+            <!-- 헤더 -->
+            <div class="modal-header">
+                <div class="modal-title">쉽고, 빠르게! 무료로 <span class="modal-subtitle">로그인하세요</span></div>
+            </div>
+
+            <!-- 소셜 로그인 버튼들 -->
+            <div class="social-buttons">
+                <button class="social-btn kakao-btn" onclick="socialLogin('kakao')">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 3C7.03 3 3 6.44 3 10.61C3 13.28 4.39 15.64 6.64 17.05L5.88 20.04C5.82 20.23 6.05 20.37 6.21 20.25L9.89 17.78C10.57 17.88 11.27 17.94 12 17.94C16.97 17.94 21 14.5 21 10.33C21 6.16 16.97 2.72 12 2.72V3Z" fill="black"/>
+                    </svg>
+                </button>
+                <button class="social-btn naver-btn" onclick="socialLogin('naver')">
+                    <svg class="icon" viewBox="0 0 24 24" fill="white">
+                        <path d="M16.273 12.845L7.376 0H0V24H7.727V11.155L16.624 24H24V0H16.273V12.845Z"/>
+                    </svg>
+                </button>
+                <button class="social-btn google-btn" onclick="socialLogin('google')">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- 로그인 폼 -->
+            <form class="login-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <input type="email" class="form-input" placeholder="이메일" id="email" oninput="checkForm()">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-input" placeholder="비밀번호" id="password" oninput="checkForm()">
+                </div>
+                
+                <div class="form-options">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="remember">
+                        <label for="remember">이메일 기억하기</label>
+                    </div>
+                    <a href="#" class="find-password">계정 찾기</a>
+                </div>
+
+                <button type="submit" class="login-submit-btn" id="loginSubmit">로그인</button>
+            </form>
+
+            <a href="#" class="signup-link">회원가입</a>
+
+            <div class="footer-text">
+                변호사 회원은 가입 후 마이로펌에서 변호사 인증해주세요.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 모달 열기
+        function openModal() {
+            document.getElementById('loginModal').classList.add('active');
+            document.body.style.overflow = 'hidden'; // 스크롤 방지
+        }
+
+        // 모달 닫기
+        function closeModal() {
+            document.getElementById('loginModal').classList.remove('active');
+            document.body.style.overflow = 'auto'; // 스크롤 복원
+        }
+
+        // 오버레이 클릭시 모달 닫기
+        function closeModalOnOverlay(event) {
+            if (event.target === event.currentTarget) {
+                closeModal();
+            }
+        }
+
+        // ESC 키로 모달 닫기
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // 소셜 로그인 처리
+        function socialLogin(provider) {
+            alert(`${provider} 로그인이 선택되었습니다.`);
+            // 실제 구현에서는 각 소셜 로그인 API 호출
+        }
+
+        // 폼 검증 및 로그인 버튼 활성화
+        function checkForm() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const submitBtn = document.getElementById('loginSubmit');
+
+            if (email && password) {
+                submitBtn.classList.add('active');
+                submitBtn.disabled = false;
+            } else {
+                submitBtn.classList.remove('active');
+                submitBtn.disabled = true;
+            }
+        }
+
+        // 로그인 폼 제출 처리
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (email && password) {
+                alert('로그인 처리 중...');
+                // 실제 구현에서는 서버로 로그인 요청 전송
+                closeModal();
+            }
+        }
+
+        // 초기 상태 설정
+        document.getElementById('loginSubmit').disabled = true;
+    </script>
+</body>
+</html>

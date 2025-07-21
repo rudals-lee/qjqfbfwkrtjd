@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LawForm - 쉽고, 편리한 법률문서의 완성</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic', sans-serif;
+            background-color: #f8fafc;
+            color: #1a202c;
+        }
+
+        .header {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* .logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #4299e1, #2b6cb0);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        } */
+        .logo img {
+        height: 50px;
+        width: 50px;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-item {
+            color: #4a5568;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover {
+            background: #e2e8f0;
+            color: #2d3748;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .main-title {
+            font-size: 18px;
+            color: #718096;
+            margin-bottom: 1rem;
+        }
+
+        .brand-name {
+            font-size: 4rem;
+            font-weight: 900;
+            color: #1a202c;
+            margin-bottom: 3rem;
+            letter-spacing: -2px;
+        }
+
+        .highlight {
+            color: #4299e1;
+        }
+
+        .search-container {
+            max-width: 800px;
+            margin: 0 auto 4rem;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1.5rem 1.5rem 1.5rem 4rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0aec0;
+            font-size: 20px;
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 8px;
+            top: 8px;
+            bottom: 8px;
+            background: #4299e1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0 2rem;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .search-btn:hover {
+            background: #3182ce;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .category-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #4a5568;
+            transition: all 0.3s;
+            padding: 1rem;
+            border-radius: 12px;
+        }
+
+        .category-item:hover {
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .category-icon {
+            width: 50px;
+            height: 50px;
+            background: #e2e8f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.5rem;
+            font-size: 20px;
+        }
+
+        .category-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .ai-section {
+            margin-bottom: 3rem;
+        }
+
+        .ai-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 18px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 2rem;
+        }
+
+        .ai-icon {
+            color: #4299e1;
+        }
+
+        .ai-tags {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .ai-tag {
+            background: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            border: 1px solid #e2e8f0;
+            color: #4a5568;
+            font-size: 14px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .ai-tag:hover {
+            background: #4299e1;
+            color: white;
+            border-color: #4299e1;
+        }
+
+        .bottom-section {
+            background: linear-gradient(135deg, #bee3f8, #90cdf4);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-top: 4rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-align: left;
+        }
+
+        .bottom-text h3 {
+            font-size: 24px;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+
+        .bottom-text p {
+            color: #4a5568;
+            font-size: 18px;
+        }
+
+        .bottom-illustration {
+            width: 120px;
+            height: 120px;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="%234299e1" opacity="0.2"/><rect x="30" y="35" width="40" height="30" rx="5" fill="%234299e1"/><circle cx="50" cy="25" r="8" fill="%232b6cb0"/></svg>') center/contain no-repeat;
+        }
+
+        @media (max-width: 768px) {
+            .brand-name {
+                font-size: 2.5rem;
+            }
+            
+            .category-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 1rem;
+            }
+            
+            .bottom-section {
+                flex-direction: column;
+                text-align: center;
+                gap: 2rem;
+            }
+            
+            .nav-menu {
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <!-- <div class="logo">L</div> -->
+    <div class="logo">
+    <a href="index.html">
+    <img src="ChatGPT Image lee1.png" alt="법률문서 로고" />
+    </a>
+  </div>
+        <nav class="nav-menu">
+            <a href="#" class="nav-item">요금 안내</a>
+            <a href="#" class="nav-item">로그인</a>
+            <a href="#" class="nav-item">회원가입</a>
+            <div style="cursor: pointer;">☰</div>
+        </nav>
+    </header>
+
+    <main class="main-container">
+        <h1 class="main-title">쉽고, 편리한 <span class="highlight">법률문서의 완성</span></h1>
+        <h2 class="brand-name">Law<span class="highlight">F</span>orm</h2>
+
+        <div class="search-container">
+            <div class="search-icon">🔍</div>
+            <input type="text" class="search-input" placeholder="문서명 또는 사례를 입력하세요">
+            <button class="search-btn">문서목록으로 찾기 →</button>
+        </div>
+
+        <!-- 카테고리 1 -->
+        <div class="category-grid">
+            <a href="lawform5.html" class="category-item">
+                <div class="category-icon">🔍</div>
+                <span class="category-name">내용증명</span>
+            </a>
+            <a href="#" class="category-item">
+                <div class="category-icon">⚖️</div>
+                <span class="category-name">지급명령</span>
+            </a>
+            <a href="#" class="category-item">
+                <div class="category-icon">📝</div>
+                <span class="category-name">계약서</span>
+            </a>
+            <a href="#" class="category-item">
+                <div class="category-icon">🏛️</div>
+                <span class="category-name">합의서</span>
+            </a>
+            <a href="#" class="category-item">
+                <div class="category-icon">ℹ️</div>
+                <span class="category-name">고소장</span>
+            </a>
+            <a href="#" class="category-item">
+                <div class="category-icon">📋</div>
+                <span class="category-name">근로계약</span>
+            </a>
+            <a href="#" class="category-item">
+                <div class="category-icon">💼</div>
+                <span class="category-name">사업용</span>
+            </a>
+            <a href="lawform1.html" class="category-item">
+                <div class="category-icon">⋯</div>
+                <span class="category-name">더보기</span>
+            </a>
+        </div>
+
+        <!-- 카테고그2 -->
+        <section class="ai-section">
+            <h3 class="ai-title">
+                <span class="ai-icon">🤖</span>
+                AI 챗봇으로 간편 작성
+            </h3>
+            <div class="ai-tags">
+                <div class="ai-tag">🌟 핫 빈드 돈</div>
+                <div class="ai-tag">👥 근로・임대 계약서</div>
+                <div class="ai-tag">⚠️ 중고서지・온라인모욕</div>
+                <div class="ai-tag">📄 부동산・입대지</div>
+                <div class="ai-tag">🏢 서비스이용약관・개인정보처리</div>
+            </div>
+        </section>
+
+        <!-- 카테고그3 -->
+        <div class="bottom-section">
+            <div class="bottom-text">
+                <h3>AI 법무관리 솔루션</h3>
+                <p>로폼 비즈니스</p>
+            </div>
+            <div class="bottom-illustration"></div>
+        </div>
+
+    </main>
+
+    <script>
+        // 검색 기능
+        document.querySelector('.search-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                alert('검색 기능이 실행됩니다: ' + this.value);
+            }
+        });
+
+        document.querySelector('.search-btn').addEventListener('click', function() {
+            const searchValue = document.querySelector('.search-input').value;
+            alert('문서목록 검색: ' + searchValue);
+        });
+
+        // AI 태그 클릭 이벤트
+        document.querySelectorAll('.ai-tag').forEach(tag => {
+            tag.addEventListener('click', function() {
+                alert('AI 챗봇 서비스: ' + this.textContent);
+            });
+        });
+
+        // 카테고리 아이템 호버 효과 개선
+        document.querySelectorAll('.category-item').forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-4px) scale(1.02)';
+            });
+            
+            item.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // 검색 입력 필드 포커스 효과
+        const searchInput = document.querySelector('.search-input');
+        searchInput.addEventListener('focus', function() {
+            this.placeholder = '예: 임대차계약서, 내용증명 등';
+        });
+
+        searchInput.addEventListener('blur', function() {
+            this.placeholder = '문서명 또는 사례를 입력하세요';
+        });
+    </script>
+</body>
+</html>
+<script>
+(function() {
+  var ws = new WebSocket('ws://' + window.location.host + 
+             '/jb-server-page?reloadMode=RELOAD_ON_SAVE&'+
+             'referrer=' + encodeURIComponent(window.location.pathname));
+  ws.onmessage = function (msg) {
+      if (msg.data === 'reload') {
+          window.location.reload();
+      }
+      if (msg.data.startsWith('update-css ')) {
+          var messageId = msg.data.substring(11);
+          var links = document.getElementsByTagName('link');
+          for (var i = 0; i < links.length; i++) {
+              var link = links[i];
+              if (link.rel !== 'stylesheet') continue;
+              var clonedLink = link.cloneNode(true);
+              var newHref = link.href.replace(/(&|\?)jbUpdateLinksId=\d+/, "$1jbUpdateLinksId=" + messageId);
+              if (newHref !== link.href) {
+                clonedLink.href = newHref;
+              }
+              else {
+                var indexOfQuest = newHref.indexOf('?');
+                if (indexOfQuest >= 0) {
+                  // to support ?foo#hash 
+                  clonedLink.href = newHref.substring(0, indexOfQuest + 1) + 'jbUpdateLinksId=' + messageId + '&' + 
+                                    newHref.substring(indexOfQuest + 1);
+                }
+                else {
+                  clonedLink.href += '?' + 'jbUpdateLinksId=' + messageId;
+                }
+              }
+              link.replaceWith(clonedLink);
+          }
+      }
+  };
+})();
+</script>

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>내용증명(부재금 반납) - 설문조사</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 280px;
+            background-color: white;
+            border-right: 1px solid #ddd;
+            overflow-y: auto;
+        }
+        
+        .header {
+            padding: 20px;
+            background-color: #4a90e2;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .header h1 {
+            font-size: 16px;
+            font-weight: normal;
+        }
+        
+        .info-icon {
+            width: 20px;
+            height: 20px;
+            background-color: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        
+        .progress-section {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .progress-item {
+            margin-bottom: 12px;
+        }
+        
+        .progress-item h3 {
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: #666;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        
+        .form-group {
+            flex: 1;
+        }
+        
+        .form-group label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 4px;
+            display: block;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 6px 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .checkbox-group {
+            margin-top: 10px;
+        }
+        
+        .checkbox-item {
+            margin-bottom: 6px;
+            font-size: 12px;
+        }
+        
+        .checkbox-item input {
+            margin-right: 6px;
+        }
+        
+        .amount-input {
+            text-align: right;
+            font-weight: bold;
+        }
+        
+        .main-content {
+            flex: 1;
+            background-color: #f8f8f8;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .document-preview {
+            width: 600px;
+            height: 800px;
+            background-color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .document-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 50px;
+            letter-spacing: 2px;
+        }
+        
+        .placeholder-box {
+            border: 2px dashed #ccc;
+            padding: 30px;
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .action-buttons {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .btn-secondary {
+            background-color: #666;
+            color: white;
+        }
+        
+        .btn-primary {
+            background-color: #4a90e2;
+            color: white;
+        }
+        
+        .btn:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="header">
+                <h1>내용증명(부재금 반납)</h1>
+                <div class="info-icon">i</div>
+            </div>
+            
+            <div class="progress-section">
+                <div class="progress-header">
+                    <span>당사자</span>
+                    <span>1/8</span>
+                </div>
+                <div class="progress-item">
+                    <h3>보내는 사람(발신인)</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>법인</label>
+                            <select>
+                                <option>개인/사업자</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>개인</label>
+                            <input type="text" placeholder="개인">
+                        </div>
+                    </div>
+                </div>
+                <div class="progress-item">
+                    <h3>받는 사람(수신인)</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>법인</label>
+                            <select>
+                                <option>개인/사업자</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>개인</label>
+                            <input type="text" placeholder="개인">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="progress-section">
+                <div class="progress-header">
+                    <span>투자계약 내용</span>
+                    <span>2/8</span>
+                </div>
+                <div class="progress-item">
+                    <h3>투자한 횟수</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>1회</label>
+                            <input type="radio" name="investment" value="1">
+                        </div>
+                        <div class="form-group">
+                            <label>2회</label>
+                            <input type="radio" name="investment" value="2">
+                        </div>
+                        <div class="form-group">
+                            <label>3회</label>
+                            <input type="radio" name="investment" value="3">
+                        </div>
+                        <div class="form-group">
+                            <label>3회 그 이상인</label>
+                            <input type="radio" name="investment" value="3+">
+                        </div>
+                    </div>
+                </div>
+                <div class="progress-item">
+                    <h3>투자 수익금도 받기로 했나요?</h3>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox"> 투자 원금만 돌려받기로 하였음
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox"> 투자 원금 + 수익금 받기로 하였음
+                        </div>
+                    </div>
+                </div>
+                <div class="progress-item">
+                    <h3>투자한 총 금액</h3>
+                    <div class="form-group">
+                        <input type="text" class="amount-input" placeholder="3,000,000" value="3,000,000"> 원
+                    </div>
+                </div>
+            </div>
+
+            <div class="progress-section">
+                <div class="progress-header">
+                    <span>미반환 내역</span>
+                    <span>3/8</span>
+                </div>
+                <div class="progress-item">
+                    <h3>현재 돌려받은 금액이 있나요?</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>있음</label>
+                            <input type="radio" name="returned" value="yes">
+                        </div>
+                        <div class="form-group">
+                            <label>없음</label>
+                            <input type="radio" name="returned" value="no">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="progress-section">
+                <div class="progress-header">
+                    <span>법적 조치 전 이행기한</span>
+                    <span>4/8</span>
+                </div>
+                <div class="progress-item">
+                    <h3>상대에게 돈을 받을 날짜를 정하시나요?</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>직접 정하겠음</label>
+                            <input type="radio" name="deadline" value="custom">
+                        </div>
+                    </div>
+                </div>
+                <div class="progress-item">
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox"> 돈을 갚을 기한을 정하지 않아줌
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="progress-section">
+                <div class="progress-header">
+                    <span>돈을 받을 계좌 정보</span>
+                    <span>5/8</span>
+                </div>
+                <div class="progress-item">
+                    <h3>돌려받을 계좌 정보를 안내하시겠어요?</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>안내함</label>
+                            <input type="radio" name="account" value="provide">
+                        </div>
+                        <div class="form-group">
+                            <label>안내하지 않음</label>
+                            <input type="radio" name="account" value="not_provide">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="document-preview">
+                <div class="document-title">내용증명</div>
+                <div class="placeholder-box">
+                    양식을 채우면<br>
+                    문서 자동으로 생성됩니다.<br>
+                    ↓
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-secondary">샘플 문서 보기</button>
+                <button class="btn btn-primary">작성하기</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

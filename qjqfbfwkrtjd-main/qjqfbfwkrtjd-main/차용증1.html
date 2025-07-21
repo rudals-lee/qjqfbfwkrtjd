@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>자동 문서 생성기</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Malgun Gothic', sans-serif, 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+/* 헤더추가 */
+header {
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 16px;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .logo {
+      font-size: 18px;
+      font-weight: bold;
+      color: #222;
+    }
+
+    .header-buttons {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-buttons button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .blue-button {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .grey-button {
+      background-color: #e0e0e0;
+      color: #666;
+    }
+
+    .right-icons {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #555;
+      font-size: 18px;
+    }
+
+    .right-icons i {
+      cursor: pointer;
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: 10px;
+    }
+
+    .profile-icon {
+      width: 28px;
+      height: 28px;
+      background-color: #eee;
+      border-radius: 50%;
+    }
+
+    .guide-link {
+      font-size: 13px;
+      color: #999;
+      text-decoration: none;
+      margin-left: 16px;
+      display: block;
+      padding: 8px 16px;
+    }
+/* 헤더 끝 */
+
+        .container {
+            display: flex;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .input-section {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .output-section {
+            flex: 2;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            min-height: 600px;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #4CAF50;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+        }
+
+        .row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .row .form-group {
+            flex: 1;
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .generate-btn:hover {
+            background-color: #45a049;
+        }
+
+        .document-output {
+            line-height: 1.8;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .document-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .document-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .document-content {
+            margin-bottom: 20px;
+        }
+
+        .applicant-info {
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .signature-line {
+            margin-top: 50px;
+            text-align: right;
+        }
+
+        .info-table {
+            margin: 20px 0;
+            line-height: 2;
+        }
+
+        .highlight {
+            background-color: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .date-info {
+            text-align: center;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<!-- 헤더추가 -->
+<header>
+  <div class="logo">금전차용증</div>
+
+  <div class="header-buttons">
+    <button class="grey-button">즐겨찾기</button>
+    <button class="blue-button">법률문서 선택하기</button>
+    <button class="grey-button" disabled>서명하기</button>
+    <button class="grey-button" disabled>변호사 검토 요청</button>
+  </div>
+
+  <div class="right-icons">
+    <!-- <i class="fa-solid fa-rotate-left" title="불러오기"></i> -->
+    <i class="fa-solid fa-arrow-rotate-left" title="되돌리기"></i>
+    <i class="fa-solid fa-print" title="인쇄하기"></i>
+    <i class="fa-solid fa-share-nodes" title="공유하기"></i>
+    <i class="fa-solid fa-download" title="다운로드"></i>
+
+    <div class="profile">
+      <div class="profile-icon"></div>
+      <span>마이로폼</span>
+    </div>
+  </div>
+</header>
+<!-- 헤더 끝 -->
+
+<body>
+    <div class="container">
+        <div class="input-section">
+            <h2>📝 차용증 상세정보 입력</h2>
+            
+            <div class="form-group">
+                <label for="applicantNum1">채권자 성명 :</label>
+                <input type="text" id="applicantNum1" placeholder="예: 김채권">
+            </div>
+            
+            <div class="form-group">
+                <label for="residentNum1">주민등록번호 :</label>
+                <input type="text" id="residentNum1" placeholder="예: 123456-1">
+            </div>
+            
+            <div class="form-group">
+                <label for="address1">주소 :</label>
+                <input type="text" id="address1" placeholder="예: 대전 동구 판교길 3 (판암동)">
+            </div>
+            <div class="form-group">
+                <label for="address1">상세주소 :</label>
+                <input type="text" id="address1" placeholder="예: 00아파트 00동 00호">
+            </div>
+            
+            <div class="form-group">
+                <label for="phone1">전화번호 :</label>
+                <input type="text" id="phone1" placeholder="예: 010-1234-5678">
+            </div>
+
+            <hr style="margin: 20px 0;">
+
+            <div class="form-group">
+                <label for="applicantNum2">채무자 성명 :</label>
+                <input type="text" id="applicantNum2" placeholder="예: 이채무">
+            </div>
+            
+            <div class="form-group">
+                <label for="residentNum2">주민등록번호 :</label>
+                <input type="text" id="residentNum2" placeholder="예: 981103-2">
+            </div>
+            
+            <div class="form-group">
+                <label for="address2">주소 :</label>
+                <input type="text" id="address2" placeholder="예: 대전 동구 판교길 7 (판암동)">
+            </div>
+            <div class="form-group">
+                <label for="address2">상세주소 :</label>
+                <input type="text" id="address2" placeholder="예: 00아파트 00동 00호">
+            </div>
+            
+            <div class="form-group">
+                <label for="phone2">전화번호 :</label>
+                <input type="text" id="phone2" placeholder="예: 010-9874-5632">
+            </div>
+
+            <hr style="margin: 20px 0;">
+
+            <div class="form-group">
+                <label for="applicationDate">신청일자</label>
+                <input type="date" id="applicationDate" value="2025-07-21">
+            </div>
+            
+            <div class="form-group">
+                <label for="amount">신청금액</label>
+                <input type="text" id="amount" placeholder="예: 1,000,000원">
+            </div>
+            
+            <div class="form-group">
+                <label for="paymentDate">발행일</label>
+                <input type="date" id="paymentDate" value="2026-07-21">
+            </div>
+
+            <button class="generate-btn" onclick="generateDocument()">📄 문서 자동 생성</button>
+        </div>
+
+        <div class="output-section">
+            <div id="documentOutput" class="document-output">
+                <div style="text-align: center; color: #888; padding: 50px;">
+                    👈 왼쪽 폼에 정보를 입력하고 "문서 자동 생성" 버튼을 클릭하세요.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}.`;
+        }
+
+        function generateDocument() {
+            const data = {
+                applicantNum1: document.getElementById('applicantNum1').value,
+                residentNum1: document.getElementById('residentNum1').value,
+                address1: document.getElementById('address1').value,
+                phone1: document.getElementById('phone1').value,
+                
+                applicantNum2: document.getElementById('applicantNum2').value,
+                residentNum2: document.getElementById('residentNum2').value,
+                address2: document.getElementById('address2').value,
+                phone2: document.getElementById('phone2').value,
+                
+                applicationDate: document.getElementById('applicationDate').value,
+                amount: document.getElementById('amount').value,
+                paymentDate: document.getElementById('paymentDate').value
+            };
+
+            // if (!data.applicantNum1 || !data.applicantNum2) {
+            //     alert('최소한 제1차, 제2차 성명은 입력해주세요.');
+            //     return;
+            // }
+
+            const formattedAppDate = formatDate(data.applicationDate);
+            const formattedPayDate = formatDate(data.paymentDate);
+
+            const documentHtml = `
+                <div class="document-header">
+                    <div class="document-title">차 용 증</div>
+                </div>
+
+                <div class="document-content">
+                    <span class="highlight">${data.applicantNum2 || '김채권'}</span>이와 
+                    <span class="highlight">'채권자'</span>라고 합니다)는 
+                    <span class="highlight">${data.applicantNum1 || '이채무'}</span>이에 
+                    <span class="highlight">'채무자'</span>라고 합니다)로부터 아래와 같이 차용 
+                    허었음을 확인하고, 변제할 것을 확약합니다.
+                </div>
+
+                <div style="text-align: center; margin: 30px 0;">
+                    <strong>- 아 래 -</strong>
+                </div>
+
+                <div class="info-table">
+                    <div>1. 차용일자 : <strong>${formattedAppDate}</strong></div>
+                    <div>2. 차용액 : 금 <strong>${data.amount || '1,000,000원'}</strong></div>
+                    <div>3. 변제일 : <strong>${formattedPayDate}</strong></div>
+                </div>
+
+                <div class="date-info">
+                    ${formattedAppDate}
+                </div>
+
+                <div class="info-table" style="margin-top: 40px;">
+                    <div><strong>제1차 : ${data.applicantNum1 || '김채권'}</strong> &nbsp;&nbsp; (서명 또는 인)</div>
+                    <div><strong>주민등록번호 : ${data.residentNum1 || '991101-1'}</strong></div>
+                    <div><strong>주소 : ${data.address1 || '대전 동구 판교길 3 (판암동)'}</strong></div>
+                    <div><strong>상세주소 : ${data.address1 || '00아파트 00동 00호'}</strong></div>
+                    <div><strong>전화번호 : ${data.phone1 || '010-1234-5678'}</strong></div>
+                </div>
+
+                <div class="info-table" style="margin-top: 30px;">
+                    <div><strong>제무자 : ${data.applicantNum2 || '이채무'}</strong> &nbsp;&nbsp; (서명 또는 인)</div>
+                    <div><strong>주민등록번호 : ${data.residentNum2 || '981103-2'}</strong></div>
+                    <div><strong>주소 : ${data.address2 || '대전 동구 판교길 7 (판암동)'}</strong></div>
+                    <div><strong>상세주소 : ${data.address2 || '00아파트 00동 00호'}</strong></div>
+                    <div><strong>전화번호 : ${data.phone2 || '010-9874-5632'}</strong></div>
+                </div>
+            `;
+
+            document.getElementById('documentOutput').innerHTML = documentHtml;
+        }
+
+        // 페이지 로드 시 자동으로 샘플 문서 생성
+        window.onload = function() {
+            // 기본값들이 이미 설정되어 있으므로 바로 생성
+            setTimeout(generateDocument, 500);
+        };
+
+        // 실시간 업데이트를 위한 이벤트 리스너
+        document.addEventListener('input', function() {
+            generateDocument();
+        });
+    </script>
+</body>
+</html>
